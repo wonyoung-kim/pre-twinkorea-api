@@ -1,0 +1,107 @@
+spring:
+  profiles:
+    active: local
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration  # security 에 대해 custom 설정을 활용하기 위해 해제 한 것
+
+  jpa:
+    show-sql: true          # 원활한 디버깅으 위해 sql 로그를 표시함
+    hibernate:
+      ddl-auto: none    # update로 해놓으면 매 실행시마다 cell 테이블의 인덱스를 새로 만드는데 데이터가 500만개가 넘어감에 따라, 10분이상 소요되서 update를 사용하지 않습니다.
+
+    database-platform:      # db 연결 설정
+      org.hibernate.dialect.MySQL5Dialect
+    open-in-view: true      # https://gracelove91.tistory.com/100
+    properties:
+      hibernate:
+        globally_quoted_identifiers: true     # https://madplay.github.io/post/how-to-escape-a-column-name-with-spring-data-jpa
+        hibernate.hbm2ddl.auto: update        # https://dkyou.tistory.com/14
+
+#  datasource:
+#    url: jdbc:mysql://localhost:3306/test
+#    username: root
+#    password:
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+  datasource:
+    url: jdbc:mysql://msg-dev.czvkrw2zkctv.ap-northeast-2.rds.amazonaws.com:3306/msg_dev
+    username: msg_dev
+    password: msgDev2021;
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      minimum-idle: 5
+      maximum-pool-size: 25
+      idle-timeout: 30000
+      pool-name: SpringBootJPAHikariCP
+      max-lifetime: 2000000
+      connection-timeout: 30000
+
+  redis:
+    host: localhost
+    port: 6379
+
+logging:
+  level:
+    com:
+      zaxxer:
+        hikari: trace                                         # 커넥션 풀 로그 확인을 위해 설정
+    io:
+      amona:
+        twinkorea:
+          configuration:
+            AppConfig: info                                   # 어플리케이션에 커스텀 로그 표시를 위해 설정
+            CustomLoggingFilter: info                         # request / response 로깅을 위해 설정
+    org:
+      springframework:
+        web:
+          servlet:
+            mvc:
+              method:
+                annotation:
+                  HttpEntityMethodProcessor: debug            # request / response 로깅을 위해 설정
+                  RequestResponseBodyMethodProcessor: error   # request / response 로깅을 위해 설정
+      hibernate:
+        SQL:
+          TRACE                                               # sql 로그 확인을 위해 설정
+    root: error
+
+
+  exception-conversion-word: '%wEx'                           # 로그 패턴 설정
+  pattern:
+    console: '%d{yyyy-MM-dd HH:mm:ss.SSS} %clr(${LOG_LEVEL_PATTERN:-%5p}){green} %clr([%22thread]){magenta} %clr(%-40.40logger{39}){cyan} %clr(: %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}){faint}'
+
+# 각종 상수 값 설정
+application:
+  siksinapi:
+    ipWhiteList: false
+
+    host: https://api-test.siksinhot.com
+#    host: https://api.siksinhot.com
+    apikey: eyJhbGciOiJIUzI1NiJ9.eyJ1aWQiOiI1NjEwNDEiLCJuaWNrbmFtZSI6IuyLneyLoF_slaDtlIwiLCJzaWtzaW5fYWRtaW4iOmZhbHNlLCJzc21fYWRtaW4iOmZhbHNlLCJpc3MiOiJzaWtzaW4iLCJleHAiOjI1MzM5MjQ2NDEyN30.fWb_zafSKFoW7ctel3-NJ8uckCJnjjYqTx3pVFe8x3o
+    defaultCellValue: 1
+    defaultCouponValue: 500
+
+    # 사전청약 날짜 관련
+    preOrderAvailableTo: 2099-02-14 02:00:00.000
+    waitingOrderAvailableTo: 2099-02-14 02:00:00.000
+    preOrderPurchaseAvailableFrom: 2022-03-07 02:00:00.000
+    preOrderPurchaseAvailableTo: 2022-03-09 01:00:00.000
+    waitingOrderPurchaseAvailableFrom: 2022-03-09 02:00:00.000
+    waitingOrderPurchaseAvailableTo: 2022-03-10 01:00:00.000
+    allPurchaseAvailableFrom: 2022-02-19 09:00:00.000
+    cellDiscountTo: 2020-01-01 09:00:00.000
+
+    # 결제 관련 값
+    cityPrice: 100
+    ruralPrice: 100
+    seaPrice: 100
+    npMid: seeon0007m
+    npMerchantKey: XELZpNnw7NR+Vg31Qu5Wv9rBFDUdJRSrr174MWGw7jJBkl1nRdZ6lW1mClDZxzU/rM+Y8DydTMHf0oTq88Pbvg==
+    stMercntIdMyAccount: M2216937
+    stAuthKeyMyAccount: SETTLEBANKISGOODSETTLEBANKISGOOD
+    stMercntIdPg: nxhp_pl_il
+    stHashAuthKeyPg: ST1009281328226982205                # 해쉬값 암호화키
+    stPrvcAuthKeyPg: pgSettle30y739r82jtd709yOfZ2yK5K     # 개인정보 암호화키
+
+    redirectUrl: https://dev-pre.twinkorea.io/purchase
+    myAccountApproveUrl: https://tbezauthapi.settlebank.co.kr/v2/APIPayApprov.do
+    myAccountCancelUrl: https://tbezauthapi.settlebank.co.kr/v2/APIPayCancel.do

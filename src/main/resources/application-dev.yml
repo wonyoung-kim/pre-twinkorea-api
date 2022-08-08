@@ -1,0 +1,100 @@
+spring:
+  profiles:
+    active: dev
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
+
+  jpa:
+    show-sql: false
+    hibernate:
+      ddl-auto: none    # update로 해놓으면 매 실행시마다 cell 테이블의 인덱스를 새로 만드는데 데이터가 500만개가 넘어감에 따라, 10분이상 소요되서 update를 사용하지 않습니다.
+    database-platform:
+      org.hibernate.dialect.MySQL5Dialect
+    open-in-view: true
+    properties:
+      hibernate:
+        globally_quoted_identifiers: true
+
+  datasource:
+    url: jdbc:mysql://msg-dev.czvkrw2zkctv.ap-northeast-2.rds.amazonaws.com:3306/msg_dev
+    username: msg_dev
+    password: msgDev2021;
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      minimum-idle: 5
+      maximum-pool-size: 25
+      idle-timeout: 30000
+      pool-name: SpringBootJPAHikariCP
+      max-lifetime: 2000000
+      connection-timeout: 30000
+
+  mvc:
+    log-request-details: true
+  redis:
+    host: twinkorea-dev-001.jwj0t5.0001.apn2.cache.amazonaws.com
+    port: 6379
+
+logging:
+  level:
+    com:
+      zaxxer:
+        hikari: trace
+    io:
+      amona:
+        twinkorea:
+          configuration:
+            AppConfig: info
+            CustomLoggingFilter: info
+    org:
+      springframework:
+        web:
+          servlet:
+            mvc:
+              method:
+                annotation:
+                  HttpEntityMethodProcessor: debug
+                  RequestResponseBodyMethodProcessor: error
+    root: error
+
+  exception-conversion-word: '%wEx'
+  pattern:
+    console: '%d{yyyy-MM-dd HH:mm:ss.SSS} %clr(${LOG_LEVEL_PATTERN:-%5p}){green} %clr([%22thread]){magenta} %clr(%-40.40logger{39}){cyan} %clr(: %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}){faint}'
+
+application:
+  siksinapi:
+    ipWhiteList: true
+    host: https://api-test.siksinhot.com
+    #    host: https://api.siksinhot.com
+    apikey: eyJhbGciOiJIUzI1NiJ9.eyJ1aWQiOiI1NjEwNDEiLCJuaWNrbmFtZSI6IuyLneyLoF_slaDtlIwiLCJzaWtzaW5fYWRtaW4iOmZhbHNlLCJzc21fYWRtaW4iOmZhbHNlLCJpc3MiOiJzaWtzaW4iLCJleHAiOjI1MzM5MjQ2NDEyN30.fWb_zafSKFoW7ctel3-NJ8uckCJnjjYqTx3pVFe8x3o
+    defaultCellValue: 1
+    defaultCouponValue: 500
+
+    # 사전청약 날짜 관련
+    preOrderAvailableTo: 2099-02-14 02:00:00.000
+    waitingOrderAvailableTo: 2099-02-14 02:00:00.000
+    preOrderPurchaseAvailableFrom: 2022-03-07 02:00:00.000
+    preOrderPurchaseAvailableTo: 2022-03-08 01:00:00.000
+    waitingOrderPurchaseAvailableFrom: 2022-03-08 02:00:00.000
+    waitingOrderPurchaseAvailableTo: 2022-03-08 04:45:00.000
+    allPurchaseAvailableFrom: 2022-02-19 09:00:00.000
+    cellDiscountTo: 2022-03-12 01:00:00.000
+
+    # 결제 관련 값
+    cityPrice: 100
+    ruralPrice: 100
+    seaPrice: 100
+    npMid: seeon0007m
+    npMerchantKey: XELZpNnw7NR+Vg31Qu5Wv9rBFDUdJRSrr174MWGw7jJBkl1nRdZ6lW1mClDZxzU/rM+Y8DydTMHf0oTq88Pbvg==
+    stMercntIdMyAccount: M2216937
+    stAuthKeyMyAccount: SETTLEBANKISGOODSETTLEBANKISGOOD
+#    stMercntIdMyAccount: M2214858
+#    stAuthKeyMyAccount: NNKOUEIHOSLKDJPQPOWJFJJNZZFDIEHF
+    stMercntIdPg: nxhp_pl_il
+    stHashAuthKeyPg: ST1009281328226982205                # 해쉬값 암호화키
+    stPrvcAuthKeyPg: pgSettle30y739r82jtd709yOfZ2yK5K     # 개인정보 암호화키
+
+    redirectUrl: https://dev-pre.twinkorea.io/purchase
+    myAccountApproveUrl: https://tbezauthapi.settlebank.co.kr/v2/APIPayApprov.do
+    myAccountCancelUrl: https://tbezauthapi.settlebank.co.kr/v2/APIPayCancel.do
+#    myAccountApproveUrl: https://ezauthapi.settlebank.co.kr:8081/v2/APIPayApprov.do
+#    myAccountCancelUrl: https://ezauthapi.settlebank.co.kr:8081/v2/APIPayCancel.do
